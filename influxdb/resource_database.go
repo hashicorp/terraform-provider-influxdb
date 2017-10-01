@@ -2,12 +2,12 @@ package influxdb
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 
 	"encoding/json"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/influxdata/influxdb/client"
+	"log"
 )
 
 func resourceDatabase() *schema.Resource {
@@ -220,7 +220,6 @@ func updateDatabase(d *schema.ResourceData, meta interface{}) error {
 			oldRPMap[policyName] = true
 
 			if !newRPMap[policyName] {
-				log.Printf("SIDGOD Policy %s found to be deleted", policyName)
 				if err := deleteRetentionPolicy(conn, policyName, name); err != nil {
 					return err
 				}
@@ -233,12 +232,10 @@ func updateDatabase(d *schema.ResourceData, meta interface{}) error {
 
 			// If policy is not in old map, it has to be created newly, otherwise it has to be updated
 			if !oldRPMap[policyName] {
-				log.Printf("SIDGOD Policy %s found to be newly added", policyName)
 				if err := createRetentionPolicy(conn, policyName, newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["default"].(bool), name); err != nil {
 					return err
 				}
 			} else {
-				log.Printf("SIDGOD Policy %s found to be updated", policyName)
 				if err := updateRetentionPolicy(conn, policyName, newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["default"].(bool), name); err != nil {
 					return err
 				}
