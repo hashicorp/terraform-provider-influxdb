@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/influxdata/influxdb/client"
-	"log"
 )
 
 func resourceDatabase() *schema.Resource {
