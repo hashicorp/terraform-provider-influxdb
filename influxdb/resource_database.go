@@ -2,6 +2,7 @@ package influxdb
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	"encoding/json"
@@ -101,6 +102,10 @@ func updateRetentionPolicy(conn *client.Client, policyName string, duration stri
 	}
 }
 
+func deleteRetentionPolicy(conn *client.Client, policyName string, database string) error {
+	return exec(conn, fmt.Sprintf("DROP RETENTION POLICY %s ON %s", quoteIdentifier(policyName), quoteIdentifier(database)))
+}
+
 func readDatabase(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*client.Client)
 	name := d.Id()
@@ -195,13 +200,48 @@ func updateDatabase(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
 
 	if d.HasChange("retention_policies") {
-		_, newRPVal := d.GetChange("retention_policies")
+		oldRPVal, newRPVal := d.GetChange("retention_policies")
+		oldRPs := oldRPVal.([]interface{})
 		newRPs := newRPVal.([]interface{})
+
+		newRPMap := make(map[string]bool)
+		oldRPMap := make(map[string]bool)
 
 		for _, newRP := range newRPs {
 			newPolicy := newRP.(map[string]interface{})
-			if err := updateRetentionPolicy(conn, newPolicy["name"].(string), newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["default"].(bool), name); err != nil {
-				return err
+			policyName := newPolicy["name"].(string)
+			newRPMap[policyName] = true
+		}
+
+		// RPs in old map but not in new map should be deleted, we'll also create old policies while we are at it
+		for _, oldRP := range oldRPs {
+			oldPolicy := oldRP.(map[string]interface{})
+			policyName := oldPolicy["name"].(string)
+			oldRPMap[policyName] = true
+
+			if !newRPMap[policyName] {
+				log.Printf("SIDGOD Policy %s found to be deleted", policyName)
+				if err := deleteRetentionPolicy(conn, policyName, name); err != nil {
+					return err
+				}
+			}
+		}
+
+		for _, newRP := range newRPs {
+			newPolicy := newRP.(map[string]interface{})
+			policyName := newPolicy["name"].(string)
+
+			// If policy is not in old map, it has to be created newly, otherwise it has to be updated
+			if !oldRPMap[policyName] {
+				log.Printf("SIDGOD Policy %s found to be newly added", policyName)
+				if err := createRetentionPolicy(conn, policyName, newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["default"].(bool), name); err != nil {
+					return err
+				}
+			} else {
+				log.Printf("SIDGOD Policy %s found to be updated", policyName)
+				if err := updateRetentionPolicy(conn, policyName, newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["default"].(bool), name); err != nil {
+					return err
+				}
 			}
 		}
 	}
