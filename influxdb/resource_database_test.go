@@ -2,7 +2,6 @@ package influxdb
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"encoding/json"
@@ -108,8 +107,6 @@ func testAccCheckRetentionPolicyNonExisting(n, database, policyName string) reso
 
 		conn := testAccProvider.Meta().(*client.Client)
 
-		log.Printf("%s Created command %v", "SIDGOD", fmt.Sprintf("SHOW RETENTION POLICIES ON %s", rs.Primary.Attributes["name"]))
-
 		query := client.Query{
 			Command: fmt.Sprintf("SHOW RETENTION POLICIES ON \"%s\"", rs.Primary.Attributes["name"]),
 		}
@@ -146,8 +143,6 @@ func testAccCheckRetentionPolicy(n, database, policyName, duration, replication 
 
 		conn := testAccProvider.Meta().(*client.Client)
 
-		log.Printf("%s Created command %v", "SIDGOD", fmt.Sprintf("SHOW RETENTION POLICIES ON %s", rs.Primary.Attributes["name"]))
-
 		query := client.Query{
 			Command: fmt.Sprintf("SHOW RETENTION POLICIES ON \"%s\"", rs.Primary.Attributes["name"]),
 		}
@@ -164,7 +159,6 @@ func testAccCheckRetentionPolicy(n, database, policyName, duration, replication 
 		for _, result := range resp.Results[0].Series[0].Values {
 			if result[0].(string) == policyName {
 				if result[1].(string) != duration {
-					log.Printf("%s Result %v", "SIDGOD", result[1])
 					return fmt.Errorf("Duration %q on retention Policy %q on %q for %q does not match", duration, policyName, database, rs.Primary.Attributes["name"])
 				} else if result[3].(json.Number).String() != replication {
 					return fmt.Errorf("Replication %q on retention Policy %q on %q for %q does not match", replication, policyName, database, rs.Primary.Attributes["name"])
