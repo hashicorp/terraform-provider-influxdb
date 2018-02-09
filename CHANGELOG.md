@@ -1,8 +1,8 @@
-## 1.0.0 (Unreleased)
+## 1.0.0 (February 09, 2018)
 
 IMPROVEMENTS:
 
-* **resource_database:** Added support for retention policy configuration [GH-3]
+* **resource_database:** Added support for retention policy configuration ([#3](https://github.com/terraform-providers/terraform-provider-influxdb/issues/3))
 
 ## 0.1.0 (June 20, 2017)
 
