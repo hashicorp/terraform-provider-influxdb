@@ -91,19 +91,6 @@ func createUser(d *schema.ResourceData, meta interface{}) error {
 	return readUser(d, meta)
 }
 
-func exec(conn *client.Client, query string) error {
-	resp, err := conn.Query(client.Query{
-		Command: query,
-	})
-	if err != nil {
-		return err
-	}
-	if resp.Err != nil {
-		return resp.Err
-	}
-	return nil
-}
-
 func grantPrivilegeOn(conn *client.Client, privilege, database, user string) error {
 	return exec(conn, fmt.Sprintf("GRANT %s ON %s TO %s", privilege, quoteIdentifier(database), user))
 }
