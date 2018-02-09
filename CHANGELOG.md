@@ -1,4 +1,9 @@
 ## 0.1.1 (Unreleased)
+
+IMPROVEMENTS:
+
+* **resource_database:** Added support for retention policy configuration [GH-3]
+
 ## 0.1.0 (June 20, 2017)
 
 NOTES:
