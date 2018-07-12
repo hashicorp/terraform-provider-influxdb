@@ -167,7 +167,7 @@ func readGrants(d *schema.ResourceData, meta interface{}) error {
 		if result[1].(string) != "NO PRIVILEGES" {
 			var grant = map[string]string{
 				"database":  result[0].(string),
-				"privilege": strings.ToLower(result[1].(string)),
+				"privilege": strings.Replace(strings.ToLower(result[1].(string)), "all privileges", "all", 1),
 			}
 			grants = append(grants, grant)
 		}
