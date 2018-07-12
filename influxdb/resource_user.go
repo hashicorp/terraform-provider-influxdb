@@ -32,7 +32,7 @@ func resourceUser() *schema.Resource {
 				Computed: true,
 			},
 			"grant": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -79,7 +79,7 @@ func createUser(d *schema.ResourceData, meta interface{}) error {
 	d.SetId(fmt.Sprintf("influxdb-user:%s", name))
 
 	if v, ok := d.GetOk("grant"); ok {
-		grants := v.([]interface{})
+		grants := v.(*schema.Set).List()
 		for _, vv := range grants {
 			grant := vv.(map[string]interface{})
 			if err := grantPrivilegeOn(conn, grant["privilege"].(string), grant["database"].(string), name); err != nil {
@@ -190,8 +190,8 @@ func updateUser(d *schema.ResourceData, meta interface{}) error {
 
 	if d.HasChange("grant") {
 		oldGrantV, newGrantV := d.GetChange("grant")
-		oldGrant := oldGrantV.([]interface{})
-		newGrant := newGrantV.([]interface{})
+		oldGrant := oldGrantV.(*schema.Set).List()
+		newGrant := newGrantV.(*schema.Set).List()
 
 		for _, oGV := range oldGrant {
 			oldGrant := oGV.(map[string]interface{})
