@@ -307,7 +307,7 @@ resource "influxdb_user" "test" {
 
     grant {
       database = "${influxdb_database.green.name}"
-      privilege = "read"
+      privilege = "READ"
     }
 }
 `
@@ -343,17 +343,17 @@ resource "influxdb_user" "test" {
 
     grant {
       database = "${influxdb_database.red.name}"
-      privilege = "all"
+      privilege = "ALL"
     }
 
     grant {
       database = "${influxdb_database.green.name}"
-      privilege = "write"
+      privilege = "WRITE"
     }
 
     grant {
       database = "${influxdb_database.blue.name}"
-      privilege = "read"
+      privilege = "READ"
     }
 }
 `

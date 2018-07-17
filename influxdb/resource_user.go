@@ -43,6 +43,16 @@ func resourceUser() *schema.Resource {
 						"privilege": &schema.Schema{
 							Type:     schema.TypeString,
 							Required: true,
+							ValidateFunc: func(v interface{}, k string) (ws []string, errors []error) {
+								value := v.(string)
+								switch value {
+								case "READ", "WRITE", "ALL":
+								default:
+									errors = append(errors, fmt.Errorf(
+										"%q must be one of following values: (READ|WRITE|ALL). Please use uppercase values only", k))
+								}
+								return
+							},
 						},
 					},
 				},
@@ -167,7 +177,7 @@ func readGrants(d *schema.ResourceData, meta interface{}) error {
 		if result[1].(string) != "NO PRIVILEGES" {
 			var grant = map[string]string{
 				"database":  result[0].(string),
-				"privilege": strings.Replace(strings.ToLower(result[1].(string)), "all privileges", "all", 1),
+				"privilege": strings.Replace(strings.ToUpper(result[1].(string)), "ALL PRIVILEGES", "ALL", 1),
 			}
 			grants = append(grants, grant)
 		}
