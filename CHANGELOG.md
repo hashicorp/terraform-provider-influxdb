@@ -1,4 +1,9 @@
 ## 1.0.1 (Unreleased)
+
+Bug Fixes:
+
+* Unapplied list of grants changes detected based on ordering ([#6](https://github.com/terraform-providers/terraform-provider-influxdb/issues/6))
+
 ## 1.0.0 (February 09, 2018)
 
 IMPROVEMENTS:
