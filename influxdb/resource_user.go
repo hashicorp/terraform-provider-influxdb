@@ -32,7 +32,7 @@ func resourceUser() *schema.Resource {
 				Computed: true,
 			},
 			"grant": &schema.Schema{
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -43,6 +43,16 @@ func resourceUser() *schema.Resource {
 						"privilege": &schema.Schema{
 							Type:     schema.TypeString,
 							Required: true,
+							ValidateFunc: func(v interface{}, k string) (ws []string, errors []error) {
+								value := v.(string)
+								switch value {
+								case "READ", "WRITE", "ALL":
+								default:
+									errors = append(errors, fmt.Errorf(
+										"%q must be one of following values: (READ|WRITE|ALL). Please use uppercase values only", k))
+								}
+								return
+							},
 						},
 					},
 				},
@@ -79,7 +89,7 @@ func createUser(d *schema.ResourceData, meta interface{}) error {
 	d.SetId(fmt.Sprintf("influxdb-user:%s", name))
 
 	if v, ok := d.GetOk("grant"); ok {
-		grants := v.([]interface{})
+		grants := v.(*schema.Set).List()
 		for _, vv := range grants {
 			grant := vv.(map[string]interface{})
 			if err := grantPrivilegeOn(conn, grant["privilege"].(string), grant["database"].(string), name); err != nil {
@@ -167,7 +177,7 @@ func readGrants(d *schema.ResourceData, meta interface{}) error {
 		if result[1].(string) != "NO PRIVILEGES" {
 			var grant = map[string]string{
 				"database":  result[0].(string),
-				"privilege": strings.ToLower(result[1].(string)),
+				"privilege": strings.Replace(strings.ToUpper(result[1].(string)), "ALL PRIVILEGES", "ALL", 1),
 			}
 			grants = append(grants, grant)
 		}
@@ -190,8 +200,8 @@ func updateUser(d *schema.ResourceData, meta interface{}) error {
 
 	if d.HasChange("grant") {
 		oldGrantV, newGrantV := d.GetChange("grant")
-		oldGrant := oldGrantV.([]interface{})
-		newGrant := newGrantV.([]interface{})
+		oldGrant := oldGrantV.(*schema.Set).List()
+		newGrant := newGrantV.(*schema.Set).List()
 
 		for _, oGV := range oldGrant {
 			oldGrant := oGV.(map[string]interface{})

@@ -76,6 +76,7 @@ func TestAccInfluxDBUser_grant(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckUserGrants("influxdb_user.test", "terraform-green", "WRITE"),
 					testAccCheckUserGrants("influxdb_user.test", "terraform-blue", "READ"),
+					testAccCheckUserGrants("influxdb_user.test", "terraform-red", "ALL PRIVILEGES"),
 					resource.TestCheckResourceAttr(
 						"influxdb_user.test", "name", "terraform_test",
 					),
@@ -86,7 +87,7 @@ func TestAccInfluxDBUser_grant(t *testing.T) {
 						"influxdb_user.test", "admin", "false",
 					),
 					resource.TestCheckResourceAttr(
-						"influxdb_user.test", "grant.#", "2",
+						"influxdb_user.test", "grant.#", "3",
 					),
 				),
 			},
@@ -306,7 +307,7 @@ resource "influxdb_user" "test" {
 
     grant {
       database = "${influxdb_database.green.name}"
-      privilege = "read"
+      privilege = "READ"
     }
 }
 `
@@ -324,6 +325,10 @@ resource "influxdb_user" "test" {
 `
 
 var testAccUserConfig_grantUpdate = `
+resource "influxdb_database" "red" {
+    name = "terraform-red"
+}
+
 resource "influxdb_database" "green" {
     name = "terraform-green"
 }
@@ -337,13 +342,18 @@ resource "influxdb_user" "test" {
     password = "terraform"
 
     grant {
+      database = "${influxdb_database.red.name}"
+      privilege = "ALL"
+    }
+
+    grant {
       database = "${influxdb_database.green.name}"
-      privilege = "write"
+      privilege = "WRITE"
     }
 
     grant {
       database = "${influxdb_database.blue.name}"
-      privilege = "read"
+      privilege = "READ"
     }
 }
 `
