@@ -1,4 +1,4 @@
-## 1.0.1 (Unreleased)
+## 1.0.1 (July 19, 2018)
 
 Bug Fixes:
 
