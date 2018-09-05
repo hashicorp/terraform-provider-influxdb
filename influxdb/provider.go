@@ -39,6 +39,11 @@ func Provider() terraform.ResourceProvider {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("INFLUXDB_PASSWORD", ""),
 			},
+			"skip_ssl_verify": &schema.Schema{
+				Type:        schema.TypeBool,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("INFLUXDB_SKIP_SSL_VERIFY", "0"),
+			},
 		},
 
 		ConfigureFunc: configure,
@@ -52,9 +57,10 @@ func configure(d *schema.ResourceData) (interface{}, error) {
 	}
 
 	config := client.Config{
-		URL:      *url,
-		Username: d.Get("username").(string),
-		Password: d.Get("password").(string),
+		URL:       *url,
+		Username:  d.Get("username").(string),
+		Password:  d.Get("password").(string),
+		UnsafeSsl: d.Get("skip_ssl_verify").(bool),
 	}
 
 	conn, err := client.NewClient(config)
