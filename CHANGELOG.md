@@ -1,4 +1,9 @@
 ## 1.0.2 (Unreleased)
+
+IMPROVEMENTS:
+
+* **Provider Configuration:** Added support for skip TLS check on provider init ([#12](https://github.com/terraform-providers/terraform-provider-influxdb/issues/11))
+
 ## 1.0.1 (July 19, 2018)
 
 Bug Fixes:
