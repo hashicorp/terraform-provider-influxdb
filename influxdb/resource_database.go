@@ -98,12 +98,8 @@ func createRetentionPolicy(conn *client.Client, policyName string, duration stri
 	}
 
 	if defaultPolicy {
-		fmt.Printf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %sDEFAULT\n", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration)
-
-		return exec(conn, fmt.Sprintf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %sDEFAULT", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
+		return exec(conn, fmt.Sprintf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s DEFAULT", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
 	} else {
-		fmt.Printf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s\n", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration)
-
 		return exec(conn, fmt.Sprintf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
 	}
 }
@@ -116,7 +112,7 @@ func updateRetentionPolicy(conn *client.Client, policyName string, duration stri
 	}
 
 	if defaultPolicy {
-		return exec(conn, fmt.Sprintf("ALTER RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %sDEFAULT", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
+		return exec(conn, fmt.Sprintf("ALTER RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s DEFAULT", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
 	} else {
 		return exec(conn, fmt.Sprintf("ALTER RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
 	}
