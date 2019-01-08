@@ -17,31 +17,31 @@ func resourceDatabase() *schema.Resource {
 		Update: updateDatabase,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"retention_policies": &schema.Schema{
+			"retention_policies": {
 				Type:     schema.TypeList,
 				Optional: true,
 				ForceNew: false,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"name": &schema.Schema{
+						"name": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"duration": &schema.Schema{
+						"duration": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"replication": &schema.Schema{
+						"replication": {
 							Type:     schema.TypeInt,
 							Optional: true,
 							Default:  1,
 						},
-						"default": &schema.Schema{
+						"default": {
 							Type:     schema.TypeBool,
 							Optional: true,
 							Default:  false,
