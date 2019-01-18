@@ -37,6 +37,8 @@ func Provider() terraform.ResourceProvider {
 			"password": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Sensitive:   true,
+				StateFunc:   hashSum,
 				DefaultFunc: schema.EnvDefaultFunc("INFLUXDB_PASSWORD", ""),
 			},
 			"skip_ssl_verify": {
