@@ -1,4 +1,13 @@
 ## 1.0.3 (Unreleased)
+
+IMPROVEMENTS:
+
+* **Password hashing:** Provider will no longer store passwords in state files as plaintext
+
+DOCUMENTATION UPDATES:
+
+* Updated "Skip SSL Verify" documentation to match actual implementation
+
 ## 1.0.2 (September 05, 2018)
 
 IMPROVEMENTS:
