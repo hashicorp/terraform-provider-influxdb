@@ -22,9 +22,11 @@ func resourceUser() *schema.Resource {
 				ForceNew: true,
 			},
 			"password": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:      schema.TypeString,
+				Required:  true,
+				ForceNew:  true,
+				Sensitive: true,
+				StateFunc: hashSum,
 			},
 			"admin": {
 				Type:     schema.TypeBool,
