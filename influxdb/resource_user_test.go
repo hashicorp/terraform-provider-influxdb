@@ -21,7 +21,7 @@ func TestAccInfluxDBUser_admin(t *testing.T) {
 						"influxdb_user.test", "name", "terraform_test",
 					),
 					resource.TestCheckResourceAttr(
-						"influxdb_user.test", "password", "terraform",
+						"influxdb_user.test", "password", "94dc3ea57721d541aae09b7bf2368c1e20d4c89996ff6df4349d86048877c0e7",
 					),
 					resource.TestCheckResourceAttr(
 						"influxdb_user.test", "admin", "true",
@@ -37,7 +37,7 @@ func TestAccInfluxDBUser_admin(t *testing.T) {
 						"influxdb_user.test", "name", "terraform_test",
 					),
 					resource.TestCheckResourceAttr(
-						"influxdb_user.test", "password", "terraform",
+						"influxdb_user.test", "password", "94dc3ea57721d541aae09b7bf2368c1e20d4c89996ff6df4349d86048877c0e7",
 					),
 					resource.TestCheckResourceAttr(
 						"influxdb_user.test", "admin", "false",
@@ -61,7 +61,7 @@ func TestAccInfluxDBUser_grant(t *testing.T) {
 						"influxdb_user.test", "name", "terraform_test",
 					),
 					resource.TestCheckResourceAttr(
-						"influxdb_user.test", "password", "terraform",
+						"influxdb_user.test", "password", "94dc3ea57721d541aae09b7bf2368c1e20d4c89996ff6df4349d86048877c0e7",
 					),
 					resource.TestCheckResourceAttr(
 						"influxdb_user.test", "admin", "false",
@@ -81,7 +81,7 @@ func TestAccInfluxDBUser_grant(t *testing.T) {
 						"influxdb_user.test", "name", "terraform_test",
 					),
 					resource.TestCheckResourceAttr(
-						"influxdb_user.test", "password", "terraform",
+						"influxdb_user.test", "password", "94dc3ea57721d541aae09b7bf2368c1e20d4c89996ff6df4349d86048877c0e7",
 					),
 					resource.TestCheckResourceAttr(
 						"influxdb_user.test", "admin", "false",
@@ -108,7 +108,7 @@ func TestAccInfluxDBUser_revoke(t *testing.T) {
 						"influxdb_user.test", "name", "terraform_test",
 					),
 					resource.TestCheckResourceAttr(
-						"influxdb_user.test", "password", "terraform",
+						"influxdb_user.test", "password", "94dc3ea57721d541aae09b7bf2368c1e20d4c89996ff6df4349d86048877c0e7",
 					),
 					resource.TestCheckResourceAttr(
 						"influxdb_user.test", "admin", "false",
@@ -126,7 +126,7 @@ func TestAccInfluxDBUser_revoke(t *testing.T) {
 						"influxdb_user.test", "name", "terraform_test",
 					),
 					resource.TestCheckResourceAttr(
-						"influxdb_user.test", "password", "terraform",
+						"influxdb_user.test", "password", "94dc3ea57721d541aae09b7bf2368c1e20d4c89996ff6df4349d86048877c0e7",
 					),
 					resource.TestCheckResourceAttr(
 						"influxdb_user.test", "admin", "false",
