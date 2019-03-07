@@ -75,7 +75,7 @@ func createUser(d *schema.ResourceData, meta interface{}) error {
 		admin_privileges = "WITH ALL PRIVILEGES"
 	}
 
-	queryStr := fmt.Sprintf("CREATE USER %s WITH PASSWORD '%s' %s", name, password, admin_privileges)
+	queryStr := fmt.Sprintf("CREATE USER %s WITH PASSWORD '%s' %s", quoteIdentifier(name), password, admin_privileges)
 	query := client.Query{
 		Command: queryStr,
 	}
@@ -104,19 +104,19 @@ func createUser(d *schema.ResourceData, meta interface{}) error {
 }
 
 func grantPrivilegeOn(conn *client.Client, privilege, database, user string) error {
-	return exec(conn, fmt.Sprintf("GRANT %s ON %s TO %s", privilege, quoteIdentifier(database), user))
+	return exec(conn, fmt.Sprintf("GRANT %s ON %s TO %s", privilege, quoteIdentifier(database), quoteIdentifier(user)))
 }
 
 func revokePrivilegeOn(conn *client.Client, privilege, database, user string) error {
-	return exec(conn, fmt.Sprintf("REVOKE %s ON %s FROM %s", privilege, quoteIdentifier(database), user))
+	return exec(conn, fmt.Sprintf("REVOKE %s ON %s FROM %s", privilege, quoteIdentifier(database), quoteIdentifier(user)))
 }
 
 func grantAllOn(conn *client.Client, user string) error {
-	return exec(conn, fmt.Sprintf("GRANT ALL PRIVILEGES TO %s", user))
+	return exec(conn, fmt.Sprintf("GRANT ALL PRIVILEGES TO %s", quoteIdentifier(user)))
 }
 
 func revokeAllOn(conn *client.Client, user string) error {
-	return exec(conn, fmt.Sprintf("REVOKE ALL PRIVILEGES FROM %s", user))
+	return exec(conn, fmt.Sprintf("REVOKE ALL PRIVILEGES FROM %s", quoteIdentifier(user)))
 }
 
 func readUser(d *schema.ResourceData, meta interface{}) error {
@@ -162,7 +162,7 @@ func readGrants(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
 
 	query := client.Query{
-		Command: fmt.Sprintf("SHOW GRANTS FOR %s", name),
+		Command: fmt.Sprintf("SHOW GRANTS FOR %s", quoteIdentifier(name)),
 	}
 
 	resp, err := conn.Query(query)
@@ -251,7 +251,7 @@ func deleteUser(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*client.Client)
 	name := d.Get("name").(string)
 
-	queryStr := fmt.Sprintf("DROP USER %s", name)
+	queryStr := fmt.Sprintf("DROP USER %s", quoteIdentifier(name))
 	query := client.Query{
 		Command: queryStr,
 	}
