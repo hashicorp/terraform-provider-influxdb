@@ -1,4 +1,4 @@
-## 1.0.4 (Unreleased)
+## 1.1.0 (Unreleased)
 
 IMPROVEMENTS:
 
