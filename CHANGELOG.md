@@ -1,4 +1,9 @@
 ## 1.0.4 (Unreleased)
+
+IMPROVEMENTS:
+
+* **Quote-safe usernames:** Provider will now work fine with username having quotes
+
 ## 1.0.3 (January 29, 2019)
 
 IMPROVEMENTS:
