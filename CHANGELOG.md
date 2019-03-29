@@ -1,4 +1,20 @@
-## 1.0.3 (Unreleased)
+## 1.2.0 (Unreleased)
+## 1.1.0 (March 07, 2019)
+
+IMPROVEMENTS:
+
+* **Quote-safe usernames:** Provider will now work fine with username having quotes
+
+## 1.0.3 (January 29, 2019)
+
+IMPROVEMENTS:
+
+* **Password hashing:** Provider will no longer store passwords in state files as plaintext
+
+DOCUMENTATION UPDATES:
+
+* Updated "Skip SSL Verify" documentation to match actual implementation
+
 ## 1.0.2 (September 05, 2018)
 
 IMPROVEMENTS:

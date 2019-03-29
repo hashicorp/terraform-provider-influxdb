@@ -14,7 +14,7 @@ func TestAccInfluxDBDatabase(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccDatabaseConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatabaseExists("influxdb_database.test"),
@@ -31,7 +31,7 @@ func TestAccInfluxDBDatabaseWithRPs(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccDatabaseWithRPSConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatabaseExists("influxdb_database.rptest"),
@@ -43,7 +43,7 @@ func TestAccInfluxDBDatabaseWithRPs(t *testing.T) {
 					testAccCheckRetentionPolicy("influxdb_database.rptest", "terraform-rp-test", "1week", "168h0m0s", "1", "1h0m0s", false),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testAccDatabaseWithRPSUpdateConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatabaseExists("influxdb_database.rptest"),
