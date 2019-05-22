@@ -1,10 +1,10 @@
 package influxdb
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
-	"encoding/json"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/influxdata/influxdb/client"
@@ -183,34 +183,30 @@ resource "influxdb_database" "test" {
 
 var testAccDatabaseWithRPSConfig = `
 resource "influxdb_database" "rptest" {
-  name = "terraform-rp-test"
-  retention_policies = [
-    {
-      name = "1day",
-      duration = "1d"
-      default = "true"
-    },
-    {
-      name = "52weeks",
-      duration = "52w",
-    }
-  ]
+	name = "terraform-rp-test"
+	retention_policies {
+		name = "1day"
+		duration = "1d"
+		default = "true"
+	}
+	retention_policies {
+		name = "52weeks"
+		duration = "52w"
+  }
 }
 `
 
 var testAccDatabaseWithRPSUpdateConfig = `
 resource "influxdb_database" "rptest" {
   name = "terraform-rp-test"
-  retention_policies = [
-    {
-      name = "1day",
-      duration = "1d"
-    },
-    {
-      name = "12weeks",
-      duration = "12w",
-      default = "true"
-    },
-  ]
+	retention_policies {
+		name = "1day"
+		duration = "1d"
+	}
+	retention_policies {
+		name = "12weeks"
+		duration = "12w"
+		default = "true"
+	}
 }
 `
