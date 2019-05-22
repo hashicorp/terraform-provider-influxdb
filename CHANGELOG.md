@@ -1,4 +1,9 @@
 ## 1.2.0 (Unreleased)
+
+IMPROVEMENTS:
+
+* The provider is now compatible with Terraform v0.12, while retaining compatibility with prior versions.
+
 ## 1.1.0 (March 07, 2019)
 
 IMPROVEMENTS:
