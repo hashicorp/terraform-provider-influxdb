@@ -200,7 +200,7 @@ resource "influxdb_database" "rptest" {
 	retention_policies {
 		name = "1week"
 		duration = "1w"
-		shardgroupduration = "2h"
+		shardgroupduration = "1h"
 	}
 }
 `
@@ -209,8 +209,8 @@ var testAccDatabaseWithRPSUpdateConfig = `
 resource "influxdb_database" "rptest" {
   name = "terraform-rp-test"
 	retention_policies {
-		name = "1day"
-		duration = "1d"
+		name = "2days"
+		duration = "2d"
 	}
 	retention_policies {
 		name = "12weeks"
