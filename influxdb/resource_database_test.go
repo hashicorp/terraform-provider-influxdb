@@ -196,11 +196,11 @@ resource "influxdb_database" "rptest" {
 	retention_policies {
 		name = "52weeks"
 		duration = "52w"
-    }
+	}
 	retention_policies {
 		name = "1week"
-      	duration = "1w"
-      	shardgroupduration = "2h"
+		duration = "1w"
+		shardgroupduration = "2h"
 	}
 }
 `
@@ -219,8 +219,8 @@ resource "influxdb_database" "rptest" {
 	}
 	retention_policies {
 		name = "1week"
-      	duration = "1w"
-      	shardgroupduration = "1h"
+		duration = "1w"
+		shardgroupduration = "1h"
 	}
 }
 `
