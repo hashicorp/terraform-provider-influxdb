@@ -41,6 +41,11 @@ func resourceDatabase() *schema.Resource {
 							Optional: true,
 							Default:  1,
 						},
+						"shardgroupduration": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Default:  "",
+						},
 						"default": {
 							Type:     schema.TypeBool,
 							Optional: true,
@@ -76,7 +81,7 @@ func createDatabase(d *schema.ResourceData, meta interface{}) error {
 		retentionPolicies := v.([]interface{})
 		for _, vv := range retentionPolicies {
 			retentionPolicy := vv.(map[string]interface{})
-			if err := createRetentionPolicy(conn, retentionPolicy["name"].(string), retentionPolicy["duration"].(string), retentionPolicy["replication"].(int), retentionPolicy["default"].(bool), name); err != nil {
+			if err := createRetentionPolicy(conn, retentionPolicy["name"].(string), retentionPolicy["duration"].(string), retentionPolicy["replication"].(int), retentionPolicy["shardgroupduration"].(string), retentionPolicy["default"].(bool), name); err != nil {
 				return err
 			}
 		}
@@ -85,19 +90,31 @@ func createDatabase(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func createRetentionPolicy(conn *client.Client, policyName string, duration string, replication int, defaultPolicy bool, database string) error {
+func createRetentionPolicy(conn *client.Client, policyName string, duration string, replication int, shardGroupDuration string, defaultPolicy bool, database string) error {
+	var shardDuration string
+
+	if shardGroupDuration != "" {
+		shardDuration = fmt.Sprintf("SHARD DURATION %s ", shardGroupDuration)
+	}
+
 	if defaultPolicy {
-		return exec(conn, fmt.Sprintf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d DEFAULT", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication))
+		return exec(conn, fmt.Sprintf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s DEFAULT", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
 	} else {
-		return exec(conn, fmt.Sprintf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication))
+		return exec(conn, fmt.Sprintf("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
 	}
 }
 
-func updateRetentionPolicy(conn *client.Client, policyName string, duration string, replication int, defaultPolicy bool, database string) error {
+func updateRetentionPolicy(conn *client.Client, policyName string, duration string, replication int, shardGroupDuration string, defaultPolicy bool, database string) error {
+	var shardDuration string
+
+	if shardGroupDuration != "" {
+		shardDuration = fmt.Sprintf("SHARD DURATION %s ", shardGroupDuration)
+	}
+
 	if defaultPolicy {
-		return exec(conn, fmt.Sprintf("ALTER RETENTION POLICY %s ON %s DURATION %s REPLICATION %d DEFAULT", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication))
+		return exec(conn, fmt.Sprintf("ALTER RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s DEFAULT", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
 	} else {
-		return exec(conn, fmt.Sprintf("ALTER RETENTION POLICY %s ON %s DURATION %s REPLICATION %d", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication))
+		return exec(conn, fmt.Sprintf("ALTER RETENTION POLICY %s ON %s DURATION %s REPLICATION %d %s", quoteIdentifier(policyName), quoteIdentifier(database), duration, replication, shardDuration))
 	}
 }
 
@@ -159,10 +176,11 @@ func readRetentionPolicies(d *schema.ResourceData, meta interface{}) error {
 	if resp.Results[0].Err == nil {
 		for _, result := range resp.Results[0].Series[0].Values {
 			var retentionPolicy = map[string]string{
-				"name":     result[0].(string),
-				"duration": result[1].(string),
-				"replicaN": result[3].(json.Number).String(),
-				"default":  strconv.FormatBool(result[4].(bool)),
+				"name":               result[0].(string),
+				"duration":           result[1].(string),
+				"shardGroupDuration": result[2].(string),
+				"replicaN":           result[3].(json.Number).String(),
+				"default":            strconv.FormatBool(result[4].(bool)),
 			}
 			retentionPolicies = append(retentionPolicies, retentionPolicy)
 		}
@@ -231,11 +249,11 @@ func updateDatabase(d *schema.ResourceData, meta interface{}) error {
 
 			// If policy is not in old map, it has to be created newly, otherwise it has to be updated
 			if !oldRPMap[policyName] {
-				if err := createRetentionPolicy(conn, policyName, newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["default"].(bool), name); err != nil {
+				if err := createRetentionPolicy(conn, policyName, newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["shardgroupduration"].(string), newPolicy["default"].(bool), name); err != nil {
 					return err
 				}
 			} else {
-				if err := updateRetentionPolicy(conn, policyName, newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["default"].(bool), name); err != nil {
+				if err := updateRetentionPolicy(conn, policyName, newPolicy["duration"].(string), newPolicy["replication"].(int), newPolicy["shardgroupduration"].(string), newPolicy["default"].(bool), name); err != nil {
 					return err
 				}
 			}
