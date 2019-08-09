@@ -25,6 +25,11 @@ resource "influxdb_database" "metrics_aggregation" {
       duration = "52w"
       default = "true"
     },
+    {
+      name = "104weeks",
+      duration = "104w"
+      shardgroupduration = "3d"
+    },
   ]
 }
 ```
@@ -40,8 +45,9 @@ The following arguments are supported:
 Each `retention_policies` supports the following:
 
 * `name` - (Required) The name of the retention policy
-* `duration` - (Required) The duration for retention policy, format of duration can be found at InfluxDB Documentation
+* `duration` - (Required) The duration for retention policy, format of duration can be found at InfluxDB Documentation.
 * `replication` - (Optional) Determines how many copies of data points are stored in a cluster. Not applicable for single node / Open Source version of InfluxDB. Default value of 1.
+* `shardgroupduration` - (Optional) Determines how much time each shard group spans. How and why to modify can be found at InfluxDB Documentation.
 * `default` - (Optional) Marks current retention policy as default. Default value is false.
 
 ## Attributes Reference
