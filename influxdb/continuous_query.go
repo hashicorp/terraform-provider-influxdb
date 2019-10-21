@@ -29,6 +29,13 @@ func resourceContinuousQuery() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
+			"advanced_query_string": {
+				Type:     schema.TypeString,
+				Required: false,
+				ForceNew: true,
+				Optional: true,
+				Default:  "",
+			},
 		},
 	}
 }
@@ -38,8 +45,14 @@ func createContinuousQuery(d *schema.ResourceData, meta interface{}) error {
 
 	name := d.Get("name").(string)
 	database := d.Get("database").(string)
+	advanced_query_string := d.Get("advanced_query_string").(string)
+	var queryStr string = ""
 
-	queryStr := fmt.Sprintf("CREATE CONTINUOUS QUERY %s ON %s BEGIN %s END", name, quoteIdentifier(database), d.Get("query").(string))
+	if len(advanced_query_string) > 0 {
+		queryStr = fmt.Sprintf("CREATE CONTINUOUS QUERY %s ON %s %s BEGIN %s END", name, quoteIdentifier(database), advanced_query_string, d.Get("query").(string))
+	} else {
+		queryStr = fmt.Sprintf("CREATE CONTINUOUS QUERY %s ON %s BEGIN %s END", name, quoteIdentifier(database), d.Get("query").(string))
+	}
 	query := client.Query{
 		Command: queryStr,
 	}
