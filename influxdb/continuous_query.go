@@ -29,6 +29,12 @@ func resourceContinuousQuery() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
+			"resample": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
+				Default:  "",
+			},
 		},
 	}
 }
@@ -38,8 +44,15 @@ func createContinuousQuery(d *schema.ResourceData, meta interface{}) error {
 
 	name := d.Get("name").(string)
 	database := d.Get("database").(string)
+	resample := d.Get("resample").(string)
 
-	queryStr := fmt.Sprintf("CREATE CONTINUOUS QUERY %s ON %s BEGIN %s END", name, quoteIdentifier(database), d.Get("query").(string))
+	var queryStr string
+	if resample == "" {
+		queryStr = fmt.Sprintf("CREATE CONTINUOUS QUERY %s ON %s BEGIN %s END", name, quoteIdentifier(database), d.Get("query").(string))
+	} else {
+		queryStr = fmt.Sprintf("CREATE CONTINUOUS QUERY %s ON %s RESAMPLE %s BEGIN %s END", name, quoteIdentifier(database), resample, d.Get("query").(string))
+	}
+
 	query := client.Query{
 		Command: queryStr,
 	}
