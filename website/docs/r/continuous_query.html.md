@@ -23,6 +23,13 @@ resource "influxdb_continuous_query" "minnie" {
     query = "SELECT min(mouse) INTO min_mouse FROM zoo GROUP BY time(30m)"
 }
 
+resource "influxdb_continuous_query" "minnie_resample" {
+    name = "minnie_resample"
+    database = "${influxdb_database.test.name}"
+    query = "SELECT min(mouse) INTO min_mouse_resample FROM zoo GROUP BY time(30m)"
+    resample = "EVERY 30m FOR 2h"
+}
+
 ```
 
 ## Argument Reference
@@ -31,7 +38,8 @@ The following arguments are supported:
 
 * `name` - (Required) The name for the continuous_query. This must be unique on the InfluxDB server.
 * `database` - (Required) The database for the continuous_query. This must be an existing influxdb database.
-* `query` - (Required) The query for the continuous_query. 
+* `query` - (Required) The query for the continuous_query.
+* `resample` - (Optional) The body of the query's RESAMPLE clause. The format is detailed in the InfluxDB documentation.
 
 ## Attributes Reference
 

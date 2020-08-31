@@ -26,6 +26,13 @@ func TestAccInfluxDBContiuousQuery(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"influxdb_continuous_query.minnie", "query", "SELECT min(mouse) INTO min_mouse FROM zoo GROUP BY time(30m)",
 					),
+					testAccCheckContiuousQueryExists("influxdb_continuous_query.minnie_resample"),
+					resource.TestCheckResourceAttr(
+						"influxdb_continuous_query.minnie_resample", "query", "SELECT min(mouse) INTO min_mouse_resampled FROM zoo GROUP BY time(30m)",
+					),
+					resource.TestCheckResourceAttr(
+						"influxdb_continuous_query.minnie_resample", "resample", "EVERY 30m FOR 90m",
+					),
 				),
 			},
 		},
@@ -82,6 +89,13 @@ resource "influxdb_continuous_query" "minnie" {
     name = "minnie"
     database = "${influxdb_database.test.name}"
     query = "SELECT min(mouse) INTO min_mouse FROM zoo GROUP BY time(30m)"
+}
+
+resource "influxdb_continuous_query" "minnie_resample" {
+    name = "minnie_resample"
+    database = "${influxdb_database.test.name}"
+    query = "SELECT min(mouse) INTO min_mouse_resampled FROM zoo GROUP BY time(30m)"
+    resample = "EVERY 30m FOR 90m"
 }
 
 `
