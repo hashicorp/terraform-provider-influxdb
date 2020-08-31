@@ -1,4 +1,13 @@
 ## 1.3.1 (Unreleased)
+
+IMPROVEMENTS:
+
+* Add support for the Continuous Query RESAMPLE clause
+
+DOCUMENTATION UPDATES:
+
+* Fix documentation on retention policies per Terraform 0.12
+
 ## 1.3.0 (August 12, 2019)
 
 IMPROVEMENTS:
