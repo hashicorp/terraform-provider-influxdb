@@ -32,8 +32,8 @@ resource "influxdb_user" "paul" {
 
 The following arguments are supported:
 
-* `name` - (Required) The name for the user. 
-* `password` - (Required) The password for the user. 
+* `name` - (Required) The name for the user.
+* `password` - (Required) The password for the user.
 * `admin` - (Optional) Mark the user as admin.
 * `grant` - (Optional) A list of grants for non-admin users
 
