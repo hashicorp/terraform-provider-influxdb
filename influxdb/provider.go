@@ -70,11 +70,6 @@ func configure(d *schema.ResourceData) (interface{}, error) {
 		return nil, err
 	}
 
-	_, _, err = conn.Ping()
-	if err != nil {
-		return nil, fmt.Errorf("error pinging server: %s", err)
-	}
-
 	return conn, nil
 }
 
